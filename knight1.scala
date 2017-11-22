@@ -3,30 +3,27 @@
 
 object CW7a {
 
-type Pos = (Int, Int)    // a position on a chessboard 
-type Path = List[Pos]    // a path...a list of positions
+  type Pos = (Int, Int)
+  type Path = List[Pos]
 
-//(1a) Complete the function that tests whether the position 
-//     is inside the board and not yet element in the path.
 
   def is_legal(dim: Int, path: Path)(x: Pos) : Boolean = {
 
 
     if (path.contains(x)) false
 
-    else if (x._1 > dim)  false
+    else if (x._1 > dim - 1)  false
 
-    else if (x._2 > dim) false
+    else if (x._2 > dim -1) false
+
+    else if (x._1 < 0) false
+
+    else if (x._2 < 0) false
 
     else true
 
   }
 
-
-
-//(1b) Complete the function that calculates for a position 
-//     all legal onward moves that are not already in the path. 
-//     The moves should be ordered in a "clockwise" manner.
 
 
   def legal_moves(dim: Int, path: Path, x: Pos) : List[Pos] = {
