@@ -54,9 +54,33 @@ object CW7a {
 //     given path. The first function counts all possible tours, 
 //     and the second collects all tours in a list of paths.
 
-//def count_tours(dim: Int, path: Path) : Int = ...
+  def count_tours(dim: Int, path: Path) : Int = {
 
-//def enum_tours(dim: Int, path: Path) : List[Path] = ...
+    if(path.length == dim * dim) 1
+
+    else{
+      val availableMoves = legal_moves(dim, path, path.head)
+      (for(a <- availableMoves) yield count_tours(dim, a:: path)).sum
+
+    }
+
+
+
+
+  }
+
+
+  def enum_tours(dim: Int, path: Path) : List[Path] = {
+
+    if(path.length == dim * dim) List(path)
+
+    else{
+      val availableMoves = legal_moves(dim, path, path.head)
+      (for(a <- availableMoves) yield enum_tours(dim, a:: path)).flatten
+
+    }
+
+  }
 
 
 }
