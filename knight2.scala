@@ -14,7 +14,18 @@ type Path = List[Pos]    // a path...a list of positions
 //     In that case Return f(x), otherwise None. If possible,
 //     calculate f(x) only once.
 
-//def first(xs: List[Pos], f: Pos => Option[Path]) : Option[Path] = ...
+  def first(xs: List[Pos], f: Pos => Option[Path]) : Option[Path] = {
+
+    xs match{
+
+      case Nil => None
+
+      case x :: i => {
+        if (f(x).isDefined) f(x)
+        else first(i, f)
+      }
+    }
+  }
 
 //(2b) Implement a function that uses the first-function for
 //     trying out onward moves, and searches recursively for a
