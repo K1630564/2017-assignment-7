@@ -6,8 +6,8 @@
 
 object CW7c {
 
-type Pos = (Int, Int)    // a position on a chessboard 
-type Path = List[Pos]    // a path...a list of positions
+  type Pos = (Int, Int)    // a position on a chessboard
+  type Path = List[Pos]    // a path...a list of positions
 
   def is_legal(dim: Int, path: Path)(x: Pos) : Boolean = {
 
@@ -15,6 +15,21 @@ type Path = List[Pos]    // a path...a list of positions
     if (path.contains(x)) false
 
     else if (x._1 > dim - 1)  false
+
+    else if (x._2 > dim -1) false
+
+    else if (x._1 < 0) false
+
+    else if (x._2 < 0) false
+
+    else true
+
+  }
+
+  def is_legal_closed(dim: Int, path: Path)(x: Pos) : Boolean = {
+
+
+    if (x._1 > dim - 1)  false
 
     else if (x._2 > dim -1) false
 
@@ -38,59 +53,72 @@ type Path = List[Pos]    // a path...a list of positions
 
   }
 
-def ordered_moves(dim: Int, path: Path, x: Pos) : List[Pos] = {
+  def legal_moves_closed(dim: Int, path: Path, x: Pos) : List[Pos] = {
 
-  legal_moves(dim, path, x).sortBy(legal_moves(dim,path,_).length)
+    val listOfAllMoves = List((x._1 + 1, x._2 + 2), (x._1 + 2, x._2 + 1), (x._1 + 2, x._2 - 1), (x._1 + 1, x._2 - 2), (x._1 - 1, x._2 - 2), (x._1 - 2, x._2 - 1), (x._1 - 2, x._2 + 1), (x._1 - 1, x._2 + 2))
 
-}
+    for(i <- listOfAllMoves if is_legal_closed(dim, path)(i)) yield i
+
+
+
+  }
+
+  def ordered_moves(dim: Int, path: Path, x: Pos) : List[Pos] = {
+
+    legal_moves(dim, path, x).sortBy(legal_moves(dim,path,_).length)
+
+  }
+
 
   def first(xs: List[Pos], f: Pos => Option[Path]) : Option[Path] = {
 
-    xs match{
+    if(xs.isEmpty) None
 
-      case Nil => None
+    else{
 
-      case x :: i => {
-        if (f(x).isDefined) f(x)
-        else first(i, f)
-      }
+      val head = f(xs.head)
+
+      if(head != None) head
+
+      else first(xs.drop(1), f)
+    }
+
+  }
+
+
+
+
+  def first_closed_tour_heuristic(dim: Int, path: Path) : Option[Path] = {
+
+    if(path.length == dim*dim && legal_moves_closed(dim, path, path.head).contains(path.last)){
+      Some(path)
+    }
+    else{
+
+      val recFunc = (x: Pos) => first_closed_tour_heuristic(dim, x::path)
+
+      first(ordered_moves(dim, path, path.head), recFunc)
+
     }
   }
 
 
 
+  def first_tour_heuristic(dim: Int, path: Path) : Option[Path] = {
 
-def first_closed_tour_heuristic(dim: Int, path: Path) : Option[Path] = {
+    if(path.length == dim*dim){
+      Some(path)
+    }
+    else{
 
-  if(path.length == dim*dim && legal_moves(dim, path, path.head).contains(path.last)){
-    Some(path)
-  }
-  else{
+      val recFunc = (x: Pos) => first_tour_heuristic(dim, x::path)
 
-    val recFunc = (x: Pos) => first_closed_tour_heuristic(dim, x::path)
+      first(ordered_moves(dim, path, path.head), recFunc)
 
-    first(ordered_moves(dim, path, path.head), recFunc)
+    }
 
-  }
-}
-
-
-
-def first_tour_heuristic(dim: Int, path: Path) : Option[Path] = {
-
-  if(path.length == dim*dim){
-    Some(path)
-  }
-  else{
-
-    val recFunc = (x: Pos) => first_tour_heuristic(dim, x::path)
-
-    first(ordered_moves(dim, path, path.head), recFunc)
 
   }
-
-
-}
 
 
 }
