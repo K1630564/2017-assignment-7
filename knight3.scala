@@ -62,7 +62,7 @@ def ordered_moves(dim: Int, path: Path, x: Pos) : List[Pos] = {
 
 def first_closed_tour_heuristic(dim: Int, path: Path) : Option[Path] = {
 
-  if(path.length == dim*dim){
+  if(path.length == dim*dim && legal_moves(dim, path, path.head).contains(path.last)){
     Some(path)
   }
   else{
@@ -83,7 +83,7 @@ def first_tour_heuristic(dim: Int, path: Path) : Option[Path] = {
   }
   else{
 
-    val recFunc = (x: Pos) => first_closed_tour_heuristic(dim, x::path)
+    val recFunc = (x: Pos) => first_tour_heuristic(dim, x::path)
 
     first(ordered_moves(dim, path, path.head), recFunc)
 
